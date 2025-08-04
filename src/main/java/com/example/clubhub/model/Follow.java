@@ -8,8 +8,13 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.IdClass;
 
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 @Entity
 @IdClass(FollowId.class)
+@Data // Lombok: generates getters, setters, toString, equals, and hashCode
+@NoArgsConstructor // Lombok: generates a no-args constructor
 public class Follow {
     @Id
     @Column(name = "user_id")
@@ -20,15 +25,4 @@ public class Follow {
     private UUID clubId;
 
     private Date createdAt;
-
-    // Constructors
-    public Follow() {}
-
-    // Getters and Setters
-    public UUID getUserId() { return userId; }
-    public void setUserId(UUID userId) { this.userId = userId; }
-    public UUID getClubId() { return clubId; }
-    public void setClubId(UUID clubId) { this.clubId = clubId; }
-    public Date getCreatedAt() { return createdAt; }
-    public void setCreatedAt(Date createdAt) { this.createdAt = createdAt; }
 }

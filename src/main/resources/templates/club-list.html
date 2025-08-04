@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Clubs</title>
+</head>
+<body>
+<h1>Clubs</h1>
+<form method="get" th:action="@{/clubs}">
+    <input type="text" name="name" placeholder="Search clubs by name"/>
+    <button type="submit">Search</button>
+</form>
+<ul>
+    <li th:each="club : ${clubs}">
+        <a th:href="@{'/clubs/' + ${club.id}}" th:text="${club.name}"></a>
+    </li>
+</ul>
+</body>
+</html>
