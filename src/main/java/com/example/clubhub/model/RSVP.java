@@ -10,7 +10,12 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 @Entity
+@Data // Lombok: generates getters, setters, toString, equals, and hashCode
+@NoArgsConstructor // Lombok: generates a no-args constructor
 public class RSVP {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -27,21 +32,4 @@ public class RSVP {
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
-
-    // Constructors
-    public RSVP() {}
-
-    // Getters and Setters
-    public UUID getId() { return rsvp_id; }
-    public void setId(UUID id) { this.rsvp_id = id; }
-    public String getStatus() { return status; }
-    public void setStatus(String status) { this.status = status; }
-    public Date getCreatedAt() { return rsvp_createdAt; }
-    public void setCreatedAt(Date createdAt) { this.rsvp_createdAt = createdAt; }
-    public Date getUpdatedAt() { return rsvp_updatedAt; }
-    public void setUpdatedAt(Date updatedAt) { this.rsvp_updatedAt = updatedAt; }
-    public Post getPost() { return post; }
-    public void setPost(Post post) { this.post = post; }
-    public User getUser() { return user; }
-    public void setUser(User user) { this.user = user; }
 }

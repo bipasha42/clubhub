@@ -10,7 +10,12 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 @Entity
+@Data // Lombok: generates getters, setters, toString, equals, and hashCode
+@NoArgsConstructor // Lombok: generates a no-args constructor
 public class Club {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -27,28 +32,4 @@ public class Club {
     @ManyToOne
     @JoinColumn(name = "university_id")
     private University university;
-
-    // Constructors
-    public Club() {}
-    // Add more constructors as needed
-
-    // Getters and Setters
-    public UUID getId() { return id; }
-    public void setId(UUID id) { this.id = id; }
-    public String getName() { return name; }
-    public void setName(String name) { this.name = name; }
-    public String getDescription() { return description; }
-    public void setDescription(String description) { this.description = description; }
-    public String getCategory() { return category; }
-    public void setCategory(String category) { this.category = category; }
-    public String getContactEmail() { return contactEmail; }
-    public void setContactEmail(String contactEmail) { this.contactEmail = contactEmail; }
-    public Boolean getIsApproved() { return isApproved; }
-    public void setIsApproved(Boolean isApproved) { this.isApproved = isApproved; }
-    public Date getCreatedAt() { return createdAt; }
-    public void setCreatedAt(Date createdAt) { this.createdAt = createdAt; }
-    public Date getUpdatedAt() { return updatedAt; }
-    public void setUpdatedAt(Date updatedAt) { this.updatedAt = updatedAt; }
-    public University getUniversity() { return university; }
-    public void setUniversity(University university) { this.university = university; }
 }
