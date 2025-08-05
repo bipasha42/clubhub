@@ -8,6 +8,25 @@
 <h1>Clubs</h1>
 <form method="get" th:action="@{/clubs}">
     <input type="text" name="name" placeholder="Search clubs by name" th:value="${param.name}" />
+
+    <select name="category">
+        <option value="">All Categories</option>
+        <option value="TECHNICAL" th:selected="${param.category == 'TECHNICAL'}">Technical</option>
+        <option value="CULTURAL" th:selected="${param.category == 'CULTURAL'}">Cultural</option>
+        <option value="ACADEMIC" th:selected="${param.category == 'ACADEMIC'}">Academic</option>
+        <option value="SPORTS" th:selected="${param.category == 'SPORTS'}">Sports</option>
+    </select>
+
+    <select name="universityId">
+        <option value="">All Universities</option>
+        <option th:each="uni : ${universities}" th:value="${uni.universityId}" th:text="${uni.universityName}" th:selected="${param.universityId == uni.universityId}"></option>
+    </select>
+
+    <label>
+        <input type="checkbox" name="isApproved" th:checked="${param.isApproved == 'on'}" />
+        Approved Only
+    </label>
+
     <button type="submit">Search</button>
 </form>
 <ul>
