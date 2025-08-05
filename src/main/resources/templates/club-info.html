@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
 </head>
 <body>
+<a href="/clubs">Back to club list</a>
 <h1 th:text="${club.name}">Club Name</h1>
 <p><strong>Description:</strong> <span th:text="${club.description}">Description</span></p>
 <p><strong>Category:</strong> <span th:text="${club.category}">Category</span></p>
@@ -17,5 +18,14 @@
     <span th:if="${club.university != null}" th:text="${club.university.universityName}">University Name</span>
     <span th:if="${club.university == null}">N/A</span>
 </p>
+
+<hr>
+<h2>Members</h2>
+<ul>
+    <li th:each="member : ${members}">
+        <span th:text="${member.userName}">Member Name</span>
+        <span th:text="'(' + ${member.role} + ')'">Role</span>
+    </li>
+</ul>
 </body>
 </html>

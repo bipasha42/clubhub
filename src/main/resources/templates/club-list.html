@@ -2,16 +2,21 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>Clubs</title>
+    <meta charset="UTF-8">
 </head>
 <body>
 <h1>Clubs</h1>
 <form method="get" th:action="@{/clubs}">
-    <input type="text" name="name" placeholder="Search clubs by name"/>
+    <input type="text" name="name" placeholder="Search clubs by name" th:value="${param.name}" />
     <button type="submit">Search</button>
 </form>
 <ul>
     <li th:each="club : ${clubs}">
         <a th:href="@{'/clubs/' + ${club.id}}" th:text="${club.name}"></a>
+        <span th:text="' - ' + ${club.category}"></span>
+        <span th:if="${club.university != null}"> (</span>
+        <span th:if="${club.university != null}" th:text="${club.university.universityName}"></span>
+        <span th:if="${club.university != null}">)</span>
     </li>
 </ul>
 </body>
