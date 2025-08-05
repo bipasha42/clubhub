@@ -3,27 +3,29 @@ package com.example.clubhub.model;
 import java.util.Date;
 import java.util.UUID;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.*;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Data // Lombok: generates getters, setters, toString, equals, and hashCode
-@NoArgsConstructor // Lombok: generates a no-args constructor
+@Table(name = "rsvp")
+@Data
+@NoArgsConstructor
 public class RSVP {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID rsvp_id;
+    @Column(name = "rsvp_id", updatable = false, nullable = false)
+    private UUID rsvpId;
 
+    @Column(name = "status", length = 50)
     private String status;
-    private Date rsvp_createdAt;
-    private Date rsvp_updatedAt;
+
+    @Column(name = "rsvp_createdat")
+    private Date rsvpCreatedAt;
+
+    @Column(name = "rsvp_updatedat")
+    private Date rsvpUpdatedAt;
 
     @ManyToOne
     @JoinColumn(name = "post_id")

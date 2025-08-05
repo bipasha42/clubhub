@@ -8,26 +8,28 @@ import java.sql.Timestamp;
 import java.util.UUID;
 
 @Entity
+@Table(name = "post")
 @Data
 @NoArgsConstructor
 public class Post {
     @Id
-    @Column(name = "post_id")
+    @GeneratedValue(strategy = GenerationType.UUID)
+    @Column(name = "post_id", updatable = false, nullable = false)
     private UUID postId;
 
-    @Column(name = "title")
+    @Column(name = "title", length = 255)
     private String title;
 
-    @Column(name = "content")
+    @Column(name = "content", columnDefinition = "text")
     private String content;
 
-    @Column(name = "imageuri") // <-- FIXED: no underscore, all lowercase
+    @Column(name = "imageuri", length = 255)
     private String imageUri;
 
-    @Column(name = "post_createdat") // <-- FIXED: no uppercase A
+    @Column(name = "post_createdat")
     private Timestamp postCreatedAt;
 
-    @Column(name = "post_updatedat") // <-- FIXED: no uppercase A
+    @Column(name = "post_updatedat")
     private Timestamp postUpdatedAt;
 
     @ManyToOne

@@ -13,25 +13,26 @@ import java.util.UUID;
 @NoArgsConstructor
 public class User {
     @Id
-    @Column(name = "user_id")
+    @GeneratedValue(strategy = GenerationType.UUID)
+    @Column(name = "user_id", updatable = false, nullable = false)
     private UUID userId;
 
-    @Column(name = "email")
+    @Column(name = "email", nullable = false, length = 255)
     private String email;
 
-    @Column(name = "passwordhash")
+    @Column(name = "passwordhash", nullable = false, length = 255)
     private String passwordHash;
 
-    @Column(name = "role")
+    @Column(name = "role", length = 50)
     private String role;
 
-    @Column(name = "user_name")
+    @Column(name = "user_name", length = 255)
     private String userName;
 
-    @Column(name = "bio")
+    @Column(name = "bio", columnDefinition = "text")
     private String bio;
 
-    @Column(name = "profilepictureuri")
+    @Column(name = "profilepictureuri", length = 255)
     private String profilePictureUri;
 
     @Column(name = "isverified")
