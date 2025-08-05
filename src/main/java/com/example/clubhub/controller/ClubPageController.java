@@ -2,8 +2,10 @@ package com.example.clubhub.controller;
 
 import com.example.clubhub.model.Club;
 import com.example.clubhub.model.User;
+import com.example.clubhub.model.Post;
 import com.example.clubhub.repository.ClubRepository;
 import com.example.clubhub.repository.UserRepository;
+import com.example.clubhub.repository.PostRepository;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -16,13 +18,14 @@ public class ClubPageController {
 
     private final ClubRepository clubRepository;
     private final UserRepository userRepository;
+    private final PostRepository postRepository;
 
-    public ClubPageController(ClubRepository clubRepository, UserRepository userRepository) {
+    public ClubPageController(ClubRepository clubRepository, UserRepository userRepository, PostRepository postRepository) {
         this.clubRepository = clubRepository;
         this.userRepository = userRepository;
+        this.postRepository = postRepository;
     }
 
-    // Show all clubs, with optional search by name
     @GetMapping("/clubs")
     public String listClubs(@RequestParam(required = false) String name, Model model) {
         List<Club> clubs;
@@ -35,13 +38,14 @@ public class ClubPageController {
         return "club-list";
     }
 
-    // Show info for a single club, including members
     @GetMapping("/clubs/{id}")
     public String clubInfo(@PathVariable UUID id, Model model) {
         Club club = clubRepository.findById(id).orElse(null);
         List<User> members = userRepository.findByClubId(id);
+        List<Post> posts = postRepository.findByClubId(id);
         model.addAttribute("club", club);
         model.addAttribute("members", members);
+        model.addAttribute("posts", posts);
         return "club-info";
     }
 }

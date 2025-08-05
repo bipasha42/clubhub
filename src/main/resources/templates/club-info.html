@@ -27,5 +27,15 @@
         <span th:text="'(' + ${member.role} + ')'">Role</span>
     </li>
 </ul>
+
+<hr>
+<h2>Posts</h2>
+<ul>
+    <li th:each="post : ${posts}">
+        <strong th:text="${post.title}">Post Title</strong>:
+        <span th:text="${post.content}">Post Content</span>
+        <span th:if="${post.postCreatedAt != null}"> - <em th:text="${post.postCreatedAt}">Created At</em></span>
+    </li>
+</ul>
 </body>
 </html>
