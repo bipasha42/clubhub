@@ -8,6 +8,7 @@ import com.example.clubhub.repository.UserRepository;
 import com.example.clubhub.repository.PostRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.data.jpa.domain.Specification;
 
 import java.util.List;
 import java.util.UUID;
@@ -51,8 +52,29 @@ public class ClubController {
         return postRepository.findByClubId(id);
     }
 
+    // Advanced search/filtering endpoint
     @GetMapping("/search")
-    public List<Club> searchClubs(@RequestParam String name) {
-        return clubRepository.findByNameContainingIgnoreCase(name);
+    public List<Club> searchClubs(
+            @RequestParam(required = false) String name,
+            @RequestParam(required = false) String category,
+            @RequestParam(required = false) UUID universityId,
+            @RequestParam(required = false) Boolean isApproved
+    ) {
+        Specification<Club> spec = Specification.where(null);
+
+        if (name != null) {
+            spec = spec.and((root, query, cb) -> cb.like(cb.lower(root.get("name")), "%" + name.toLowerCase() + "%"));
+        }
+        if (category != null) {
+            spec = spec.and((root, query, cb) -> cb.equal(cb.lower(root.get("category")), category.toLowerCase()));
+        }
+        if (universityId != null) {
+            spec = spec.and((root, query, cb) -> cb.equal(root.get("university").get("universityId"), universityId));
+        }
+        if (isApproved != null) {
+            spec = spec.and((root, query, cb) -> cb.equal(root.get("isApproved"), isApproved));
+        }
+
+        return clubRepository.findAll(spec);
     }
 }
