@@ -1,21 +1,21 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-  <title th:text="${club.clubName}">Club Info</title>
-  <meta charset="UTF-8">
+    <title th:text="${club.name}">Club Info</title>
+    <meta charset="UTF-8">
 </head>
 <body>
-<h1 th:text="${club.clubName}">Club Name</h1>
-<p><strong>Description:</strong> <span th:text="${club.clubDescription}">Description</span></p>
-<p><strong>Category:</strong> <span th:text="${club.clubCategory}">Category</span></p>
-<p><strong>Contact Email:</strong> <span th:text="${club.clubContactEmail}">Contact Email</span></p>
-<p><strong>Approved:</strong> <span th:text="${club.clubIsApproved}">Approved</span></p>
-<p><strong>Created At:</strong> <span th:text="${club.clubCreatedAt}">Created At</span></p>
-<p><strong>Updated At:</strong> <span th:text="${club.clubUpdatedAt}">Updated At</span></p>
+<h1 th:text="${club.name}">Club Name</h1>
+<p><strong>Description:</strong> <span th:text="${club.description}">Description</span></p>
+<p><strong>Category:</strong> <span th:text="${club.category}">Category</span></p>
+<p><strong>Contact Email:</strong> <span th:text="${club.contactEmail}">Contact Email</span></p>
+<p><strong>Approved:</strong> <span th:text="${club.isApproved}">Approved</span></p>
+<p><strong>Created At:</strong> <span th:text="${club.createdAt}">Created At</span></p>
+<p><strong>Updated At:</strong> <span th:text="${club.updatedAt}">Updated At</span></p>
 <p>
-  <strong>University:</strong>
-  <span th:if="${club.university != null}" th:text="${club.university.universityName}">University Name</span>
-  <span th:if="${club.university == null}">N/A</span>
+    <strong>University:</strong>
+    <span th:if="${club.university != null}" th:text="${club.university.universityName}">University Name</span>
+    <span th:if="${club.university == null}">N/A</span>
 </p>
 </body>
 </html>
