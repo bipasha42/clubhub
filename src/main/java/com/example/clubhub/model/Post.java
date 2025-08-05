@@ -1,31 +1,34 @@
 package com.example.clubhub.model;
 
-import java.util.Date;
-import java.util.UUID;
-
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-
+import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.sql.Timestamp;
+import java.util.UUID;
+
 @Entity
-@Data // Lombok: generates getters, setters, toString, equals, and hashCode
-@NoArgsConstructor // Lombok: generates a no-args constructor
+@Data
+@NoArgsConstructor
 public class Post {
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID post_id;
+    @Column(name = "post_id")
+    private UUID postId;
 
+    @Column(name = "title")
     private String title;
+
+    @Column(name = "content")
     private String content;
+
+    @Column(name = "imageuri") // <-- FIXED: no underscore, all lowercase
     private String imageUri;
-    private Date post_createdAt;
-    private Date post_updatedAt;
+
+    @Column(name = "post_createdat") // <-- FIXED: no uppercase A
+    private Timestamp postCreatedAt;
+
+    @Column(name = "post_updatedat") // <-- FIXED: no uppercase A
+    private Timestamp postUpdatedAt;
 
     @ManyToOne
     @JoinColumn(name = "club_id")

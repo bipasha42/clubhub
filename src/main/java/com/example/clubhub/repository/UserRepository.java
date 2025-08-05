@@ -1,8 +1,12 @@
 package com.example.clubhub.repository;
 
-import java.util.UUID;
-
+import com.example.clubhub.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import com.example.clubhub.model.User;
-public interface UserRepository extends JpaRepository<User, UUID> {}
+import java.util.List;
+import java.util.UUID;
+
+public interface UserRepository extends JpaRepository<User, UUID> {
+    // Find all users by club
+    List<User> findByClubId(UUID clubId);
+}

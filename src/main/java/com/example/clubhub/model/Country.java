@@ -1,27 +1,25 @@
 package com.example.clubhub.model;
 
-import java.util.UUID;
-
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-
+import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.UUID;
+
 @Entity
-@Data // Lombok: generates getters, setters, toString, equals, and hashCode
-@NoArgsConstructor // Lombok: generates a no-args constructor
+@Data
+@NoArgsConstructor
 public class Country {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID country_id;
+    @Column(name = "country_id")
+    private UUID countryId;
 
-    private String country_name;
+    @Column(name = "country_name")
+    private String countryName;
 
     // Custom constructor for convenience
-    public Country(String country_name) {
-        this.country_name = country_name;
+    public Country(String countryName) {
+        this.countryName = countryName;
     }
 }
