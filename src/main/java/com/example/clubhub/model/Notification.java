@@ -3,27 +3,29 @@ package com.example.clubhub.model;
 import java.util.Date;
 import java.util.UUID;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.*;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Data // Lombok: generates getters, setters, toString, equals, and hashCode
-@NoArgsConstructor // Lombok: generates a no-args constructor
+@Table(name = "notification")
+@Data
+@NoArgsConstructor
 public class Notification {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID notification_id;
+    @Column(name = "notification_id", updatable = false, nullable = false)
+    private UUID notificationId;
 
+    @Column(name = "message", columnDefinition = "text")
     private String message;
+
+    @Column(name = "isread")
     private Boolean isRead;
-    private Date notification_createdAt;
+
+    @Column(name = "notification_createdat")
+    private Date notificationCreatedAt;
 
     @ManyToOne
     @JoinColumn(name = "user_id")

@@ -7,15 +7,16 @@ import lombok.NoArgsConstructor;
 import java.util.UUID;
 
 @Entity
+@Table(name = "university")
 @Data
 @NoArgsConstructor
 public class University {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    @Column(name = "university_id")
+    @Column(name = "university_id", updatable = false, nullable = false)
     private UUID universityId;
 
-    @Column(name = "university_name")
+    @Column(name = "university_name", nullable = false, length = 255)
     private String universityName;
 
     @ManyToOne
