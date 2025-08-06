@@ -17,7 +17,7 @@ public class User {
     @Column(name = "user_id", updatable = false, nullable = false)
     private UUID userId;
 
-    @Column(name = "email", nullable = false, length = 255)
+    @Column(name = "email", nullable = false, unique = true, length = 255)
     private String email;
 
     @Column(name = "passwordhash", nullable = false, length = 255)
@@ -51,4 +51,8 @@ public class User {
     @ManyToOne
     @JoinColumn(name = "club_id")
     private Club club;
+
+    public boolean isAdmin() {
+        return "ADMIN".equalsIgnoreCase(this.role);
+    }
 }

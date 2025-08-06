@@ -1,6 +1,5 @@
 package com.example.clubhub.controller;
 
-
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 
@@ -8,6 +7,11 @@ import org.springframework.web.bind.annotation.GetMapping;
 public class HomeController {
     @GetMapping("/")
     public String home() {
-        return "index"; // This will render src/main/resources/templates/index.html
+        return "login";
+    }
+
+    @GetMapping("/student_dashboard")
+    public String studentDashboard() {
+        return "student_dashboard";
     }
 }

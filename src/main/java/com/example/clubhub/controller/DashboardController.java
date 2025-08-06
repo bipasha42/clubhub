@@ -33,7 +33,8 @@ public class DashboardController {
     }
 
     // Show dashboard
-    @GetMapping({"/", "/dashboard"})
+
+    @GetMapping({"/dashboard", "/crud"})
     public String dashboard(Model model,
                             @RequestParam(required = false) String name,
                             @RequestParam(required = false) String category,
