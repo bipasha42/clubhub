@@ -32,6 +32,9 @@ public class Post {
     @Column(name = "post_updatedat")
     private Timestamp postUpdatedAt;
 
+    @Column(name = "approved")
+    private boolean approved; // <--- THIS FIELD IS REQUIRED
+
     @ManyToOne
     @JoinColumn(name = "club_id")
     private Club club;
