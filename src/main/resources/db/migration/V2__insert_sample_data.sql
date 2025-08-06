@@ -36,7 +36,7 @@ INSERT INTO club (id, name, description, category, contactEmail, isApproved, cre
 
 -- Insert Users
 INSERT INTO users (user_id, email, passwordHash, role, user_name, bio, profilePictureUri, isVerified, user_createdAt, user_updatedAt, university_id, club_id) VALUES
-                                                                                                                                                                  (gen_random_uuid(), 'admin@diu.edu.bd', '$2a$10$N9qo8uLOickgx2ZMRZoMye', 'ADMIN', 'Dr. Rahman', 'Admin', null, true, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP,
+                                                                                                                                                                  (gen_random_uuid(), 'admin@diu.edu.bd', '     ', 'ADMIN', 'Dr. Rahman', 'Admin', null, true, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP,
                                                                                                                                                                    (SELECT university_id FROM university WHERE university_name = 'DIU'), null),
                                                                                                                                                                   (gen_random_uuid(), 'rifat@diu.edu.bd', '$2a$10$N9qo8uLOickgx2ZMRZoMye', 'STUDENT', 'Rifat Ahmed', 'CSE student', null, true, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP,
                                                                                                                                                                    (SELECT university_id FROM university WHERE university_name = 'DIU'),
