@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>All Posts</title>
+    <style>
+        body {
+            background: #fff;
+            color: #000;
+            font-family: Arial, sans-serif;
+        }
+        .container {
+            margin: 40px auto;
+            max-width: 900px;
+        }
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            background: #fff;
+        }
+        th, td {
+            border: 1px solid #888;
+            padding: 8px 12px;
+            text-align: left;
+        }
+        th {
+            background: #f2f2f2;
+        }
+        a {
+            color: #6c63ff;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+        .actions form {
+            display: inline;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>All Posts</h1>
+    <a href="/posts/new">Create New Post</a>
+    <table>
+        <tr>
+            <th>Title</th>
+            <th>Content</th>
+            <th>Image</th>
+            <th>Approved</th>
+            <th>Actions</th>
+        </tr>
+        <tr th:each="post : ${posts}">
+            <td th:text="${post.title}"></td>
+            <td th:text="${post.content}"></td>
+            <td>
+                <img th:if="${post.imageUri != null}" th:src="${post.imageUri}" width="100"/>
+            </td>
+            <td th:text="${post.approved}"></td>
+            <td class="actions">
+                <a th:href="@{'/posts/edit/' + ${post.postId}}">Edit</a>
+                <form th:action="@{'/posts/delete/' + ${post.postId}}" method="post">
+                    <button type="submit">Delete</button>
+                </form>
+                <form th:if="${!post.approved}" th:action="@{'/posts/approve/' + ${post.postId}}" method="post">
+                    <button type="submit">Approve</button>
+                </form>
+            </td>
+        </tr>
+        <tr th:if="${#lists.isEmpty(posts)}">
+            <td colspan="5" style="text-align:center; color:#888;">No posts yet.</td>
+        </tr>
+    </table>
+</div>
+</body>
+</html>
