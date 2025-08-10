@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Explore Clubs</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+<div class="container mt-4">
+    <h1 class="text-center mb-4">Explore Clubs</h1>
+
+    <!-- Error Message -->
+    <div th:if="${errorMessage}" class="alert alert-danger" th:text="${errorMessage}"></div>
+
+    <!-- Clubs Grid -->
+    <div class="row">
+        <div class="col-md-4 mb-4" th:each="club : ${clubs}">
+            <div class="card h-100">
+                <div th:if="${club.bannerUrl}" class="card-img-top" style="height: 200px; background-size: cover; background-position: center;" th:style="'background-image: url(' + ${club.bannerUrl} + ')'"></div>
+                <div th:unless="${club.bannerUrl}" class="card-img-top bg-primary d-flex align-items-center justify-content-center" style="height: 200px;">
+                    <h3 class="text-white" th:text="${club.name}">Club Name</h3>
+                </div>
+
+                <div class="card-body">
+                    <h5 class="card-title" th:text="${club.name}">Club Name</h5>
+                    <p class="card-text" th:text="${club.description}">Club Description</p>
+                    <p class="text-muted">
+                        <small>
+                            <i class="fas fa-university"></i> <span th:text="${club.universityName}">University</span><br>
+                            <i class="fas fa-users"></i> <span th:text="${club.memberCount}">0</span> members<br>
+                            <i class="fas fa-newspaper"></i> <span th:text="${club.postCount}">0</span> posts
+                        </small>
+                    </p>
+                </div>
+
+                <div class="card-footer">
+                    <div class="d-flex justify-content-between">
+                        <a th:href="@{/clubs/{id}(id=${club.id})}" class="btn btn-primary">View Club</a>
+                        <button class="btn btn-outline-success" th:if="${!club.following}"
+                                onclick="alert('Follow functionality coming soon!')">Follow</button>
+                        <button class="btn btn-success" th:if="${club.following}"
+                                onclick="alert('Unfollow functionality coming soon!')">Following</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- No clubs message -->
+    <div th:if="${#lists.size(clubs) == 0}" class="text-center">
+        <h3>No clubs found</h3>
+        <p>Be the first to create a club!</p>
+    </div>
+</div>
+</body>
+</html>
