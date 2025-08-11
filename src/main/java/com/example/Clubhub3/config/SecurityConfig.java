@@ -21,25 +21,25 @@ public class SecurityConfig {
 
     @Bean
     public UserDetailsService userDetailsService() {
-        // Original User
+        // Original User - University Admin
         UserDetails userNibir = User.builder()
-                .username("nibir")
+                .username("nibir@example.com") // Changed to match the email in database
                 .password(passwordEncoder.encode("lmao"))
                 .roles("USER", "ADMIN", "UNIADMIN")
                 .build();
 
-        // New User 1
+        // Student User 1
         UserDetails userRifat = User.builder()
-                .username("rifat")
+                .username("rifat@example.com") // Changed to match the email in database
                 .password(passwordEncoder.encode("dsi"))
-                .roles("USER") // Assigning a basic USER role
+                .roles("USER")
                 .build();
 
-        // New User 2
+        // Student User 2
         UserDetails userBup = User.builder()
-                .username("bup")
+                .username("bup@example.com") // Changed to match the email in database
                 .password(passwordEncoder.encode("dsi"))
-                .roles("USER") // Assigning a basic USER role
+                .roles("USER")
                 .build();
 
         // The InMemoryUserDetailsManager can accept multiple users
@@ -50,17 +50,40 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(authz -> authz
+                        .requestMatchers("/css/**", "/js/**", "/images/**", "/webjars/**").permitAll()
+                        .requestMatchers("/clubs/explore").permitAll()
+                        .requestMatchers("/login").permitAll()
+                        .requestMatchers("/api/**").authenticated()
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form
+                        .loginPage("/login")
+                        .loginProcessingUrl("/login")
+                        .usernameParameter("username")
+                        .passwordParameter("password")
                         .defaultSuccessUrl("/clubs", true)
+                        .failureUrl("/login?error")
                         .permitAll()
                 )
                 .logout(logout -> logout
+                        .logoutUrl("/logout")
                         .logoutSuccessUrl("/login?logout")
+                        .invalidateHttpSession(true)
+                        .deleteCookies("JSESSIONID")
                         .permitAll()
                 )
-                .csrf(csrf -> csrf.disable()); // Disable CSRF for testing
+                .csrf(csrf -> csrf.disable()) // Disable CSRF for testing
+                .exceptionHandling(ex -> ex
+                        .authenticationEntryPoint((request, response, authException) -> {
+                            if (request.getRequestURI().startsWith("/api/")) {
+                                response.setStatus(401);
+                                response.setContentType("application/json");
+                                response.getWriter().write("{\"error\": \"Please login to continue\"}");
+                            } else {
+                                response.sendRedirect("/login");
+                            }
+                        })
+                );
 
         return http.build();
     }
