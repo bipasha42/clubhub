@@ -8,8 +8,8 @@ public class WebMvcConfig implements WebMvcConfigurer {
     
     @Override
     public void addViewControllers(ViewControllerRegistry registry) {
-        // Add any view controllers if needed
-        // registry.addViewController("/uniadmin").setViewName("redirect:/uniadmin/clubs");
+        // Redirect root URL to login page
+        registry.addViewController("/").setViewName("redirect:/login");
     }
 }
 

@@ -2,9 +2,11 @@ package com.example.Clubhub3.repo;
 
 import com.example.Clubhub3.model.Post;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.UUID;
@@ -26,4 +28,14 @@ public interface PostRepository extends JpaRepository<Post, UUID> {
 
     @Query(value = "SELECT CASE WHEN COUNT(*) > 0 THEN true ELSE false END FROM postlikes WHERE post_id = :postId AND user_id = :userId", nativeQuery = true)
     boolean isPostLikedByUser(@Param("postId") UUID postId, @Param("userId") UUID userId);
+
+    @Modifying
+    @Transactional
+    @Query(value = "INSERT INTO postlikes (post_id, user_id, liked_at) VALUES (:postId, :userId, CURRENT_TIMESTAMP)", nativeQuery = true)
+    void addLike(@Param("postId") UUID postId, @Param("userId") UUID userId);
+
+    @Modifying
+    @Transactional
+    @Query(value = "DELETE FROM postlikes WHERE post_id = :postId AND user_id = :userId", nativeQuery = true)
+    void removeLike(@Param("postId") UUID postId, @Param("userId") UUID userId);
 }

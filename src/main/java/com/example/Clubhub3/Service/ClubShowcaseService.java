@@ -3,6 +3,7 @@ package com.example.Clubhub3.Service;
 import com.example.Clubhub3.dto.ClubShowcaseDto;
 import com.example.Clubhub3.dto.PostDto;
 import com.example.Clubhub3.dto.ClubMemberDto;
+import com.example.Clubhub3.dto.PostCommentDto; // Add this
 import com.example.Clubhub3.model.Club;
 import com.example.Clubhub3.model.Post;
 import com.example.Clubhub3.repo.ClubShowcaseRepository;
@@ -10,7 +11,8 @@ import com.example.Clubhub3.repo.PostRepository;
 import com.example.Clubhub3.repo.ClubMemberRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.Arrays;
@@ -28,6 +30,8 @@ public class ClubShowcaseService {
     private PostRepository postRepository;
     @Autowired
     private ClubMemberRepository clubMemberRepository;
+    @Autowired
+    private PostCommentService postCommentService; // Add this
 
     public List<ClubMemberDto> getClubMembers(UUID clubId) {
         System.out.println("\n--- ENTERING ClubShowcaseService.getClubMembers ---");
@@ -100,16 +104,25 @@ public class ClubShowcaseService {
     }
 
     // --- OTHER METHODS (UNCHANGED) ---
-    public List<ClubShowcaseDto> getAllClubsForShowcase(UUID currentUserId) {
+    public Page<ClubShowcaseDto> getAllClubsForShowcase(UUID currentUserId, Pageable pageable) {
         try {
-            return clubRepository.findAllClubsForShowcase().stream()
-                    .map(club -> convertToShowcaseDto(club, currentUserId))
-                    .filter(Objects::nonNull)
-                    .collect(Collectors.toList());
+            Page<Club> clubPage = clubRepository.findAllClubsForShowcasePaginated(pageable);
+            return clubPage.map(club -> {
+                ClubShowcaseDto dto = new ClubShowcaseDto();
+                dto.setId(club.getId());
+                dto.setName(club.getName());
+                dto.setDescription(club.getDescription());
+                dto.setBannerUrl(club.getBannerUrl());
+                dto.setUniversityName(club.getUniversity() != null ? club.getUniversity().getName() : "Unknown University");
+                dto.setMemberCount(clubRepository.countMembersByClubId(club.getId()));
+                dto.setPostCount(clubRepository.countPostsByClubId(club.getId()));
+                dto.setFollowing(currentUserId != null && clubRepository.isUserFollowingClub(club.getId(), currentUserId));
+                return dto;
+            });
         } catch (Exception e) {
             System.err.println("Error in getAllClubsForShowcase: " + e.getMessage());
             e.printStackTrace();
-            return List.of();
+            throw new RuntimeException("Error loading clubs: " + e.getMessage(), e);
         }
     }
 
@@ -148,6 +161,11 @@ public class ClubShowcaseService {
             e.printStackTrace();
             return null;
         }
+    }
+
+    // Add this method
+    public List<PostCommentDto> getPostComments(UUID postId) {
+        return postCommentService.getComments(postId);
     }
 
     private ClubShowcaseDto convertToShowcaseDto(Club club, UUID currentUserId) {
