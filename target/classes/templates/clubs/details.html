@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${club != null ? club.name : 'Club Details'}">Club Details</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .profile-initial {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background-color: #6c757d;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+<div class="container my-4">
+
+    <a href="/clubs" class="btn btn-outline-secondary mb-4">← Back to All Clubs</a>
+    <div th:if="${errorMessage}" class="alert alert-danger" th:text="${errorMessage}"></div>
+
+    <div th:if="${club != null}">
+        <!-- Section 1: Enhanced Club Header -->
+        <div class="p-4 mb-4 bg-light rounded-3">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h1 class="display-5" th:text="${club.name}">Club Name</h1>
+                    <p class="text-muted fs-5" th:text="${club.universityName ?: 'No university specified'}">University Name</p>
+                </div>
+                <div class="text-end">
+                    <button type="button"
+                            onclick="handleFollowClick(this)"
+                            th:data-club-id="${club.id}"
+                            th:data-following="${club.following}"
+                            class="btn mb-2"
+                            th:classappend="${club.following ? 'btn-secondary' : 'btn-primary'}"
+                            th:text="${club.following ? 'Following' : 'Follow Club'}">Follow Club</button>
+                </div>
+            </div>
+            <hr>
+            <p class="lead" th:text="${club.description}">Club Description</p>
+            <div class="d-flex justify-content-between text-muted">
+                <small th:if="${club.createdAt}">Founded: <strong th:text="${#temporals.format(club.createdAt, 'dd MMMM yyyy')}"></strong></small>
+                <small th:if="${club.adminName}">Led by: <strong th:text="${club.adminName}"></strong></small>
+            </div>
+        </div>
+
+        <!-- Section 2: Two-Column Layout -->
+        <div class="row g-5">
+            <!-- Left Column: Posts -->
+            <div class="col-md-7">
+                <h3>Recent Posts (<span th:text="${club.postCount}">0</span>)</h3>
+                <div th:if="${posts != null and !#lists.isEmpty(posts)}">
+                    <!-- The list of posts -->
+                    <div class="post-list">
+                        <div class="card mb-3 post-item" th:each="post : ${posts}" th:if="${post != null}">
+                            <div class="card-body">
+                                <p class="card-text" th:text="${post.content}">Post content here...</p>
+                                <div class="d-flex justify-content-between align-items-center text-muted">
+                                    <small th:text="${'By ' + (post.authorName ?: 'Unknown Author')}"></small>
+                                    <small th:text="${post.createdAt != null ? #temporals.format(post.createdAt, 'MMM dd, yyyy') : ''}"></small>
+                                </div>
+                                <hr class="my-2">
+                                <div>
+                                    <button type="button"
+                                            onclick="handleLikeClick(this)"
+                                            th:data-post-id="${post.id}"
+                                            th:data-liked="${post.likedByCurrentUser}"
+                                            class="btn btn-sm mb-2"
+                                            th:classappend="${post.likedByCurrentUser ? 'btn-danger' : 'btn-outline-danger'}">
+                                        <i class="fas fa-heart"></i>
+                                        <span th:text="${post.likeCount}">0</span> likes
+                                    </button>
+                                    <span class="badge bg-secondary" th:text="${post.commentCount} + ' comments'"></span>
+                                    <a th:href="@{/clubs/posts/{id}(id=${post.id})}" class="btn btn-sm btn-outline-primary float-end">Read More</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- "Show All" button for posts -->
+                    <div class="text-center mt-2">
+                        <button id="show-all-posts-btn" class="btn btn-outline-primary">Show All Posts</button>
+                    </div>
+                </div>
+                <div th:if="${posts == null or #lists.isEmpty(posts)}" class="text-center text-muted mt-5">
+                    <p>No posts have been made in this club yet.</p>
+                </div>
+            </div>
+
+            <!-- Right Column: Members -->
+            <div class="col-md-5">
+                <h3>Members (<span th:text="${club.memberCount}">0</span>)</h3>
+                <div th:if="${members != null and !#lists.isEmpty(members)}">
+                    <!-- The list of members -->
+                    <ul class="list-group member-list">
+                        <li class="list-group-item member-item" th:each="member : ${members}" th:if="${member != null}">
+                            <div class="d-flex align-items-center">
+                                <div th:if="${member.profilePictureUrl}" class="me-3">
+                                    <img th:src="${member.profilePictureUrl}" class="rounded-circle" width="50" height="50" alt="Profile picture">
+                                </div>
+                                <div th:unless="${member.profilePictureUrl}" class="me-3">
+                                    <div class="profile-initial">
+                                        <span th:text="${member.userName != null ? #strings.substring(member.userName, 0, 1).toUpperCase() : '?'}"></span>
+                                    </div>
+                                </div>
+                                <div class="flex-grow-1">
+                                    <h6 class="mb-0" th:text="${member.userName ?: 'Unnamed Member'}"></h6>
+                                    <small class="text-muted" th:if="${member.memberSince != null}" th:text="${'Member since ' + #temporals.format(member.memberSince, 'MMM yyyy')}"></small>
+                                </div>
+                                <span th:if="${member.admin}" class="badge bg-info text-dark">Admin</span>
+                            </div>
+                        </li>
+                    </ul>
+                    <!-- "Show All" button for members -->
+                    <div class="text-center mt-2">
+                        <button id="show-all-members-btn" class="btn btn-outline-primary">Show All Members</button>
+                    </div>
+                </div>
+                <div th:if="${members == null or #lists.isEmpty(members)}" class="text-center text-muted mt-5">
+                    <p>No member information available.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div th:if="${club == null}" class="alert alert-warning mt-4">
+        <h4>Club Not Found</h4>
+        <p>The club you are looking for does not exist or could not be loaded.</p>
+    </div>
+
+</div>
+
+<!-- JAVASCRIPT FOR "SHOW MORE" FUNCTIONALITY -->
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        /**
+         * A reusable function to set up "show more" functionality for a list.
+         * @param {string} itemClass - The CSS class of the items in the list (e.g., '.post-item').
+         * @param {string} buttonId - The ID of the button that triggers showing more.
+         * @param {number} initialCount - The number of items to show initially.
+         */
+        function setupShowMore(itemClass, buttonId, initialCount) {
+            const items = document.querySelectorAll(itemClass);
+            const showMoreBtn = document.getElementById(buttonId);
+
+            if (!showMoreBtn) return;
+
+            // Hide items that are beyond the initial count
+            for (let i = initialCount; i < items.length; i++) {
+                items[i].style.display = 'none';
+            }
+
+            // If there are not enough items to hide, hide the button itself
+            if (items.length <= initialCount) {
+                showMoreBtn.style.display = 'none';
+            }
+
+            // Add click event to the button
+            showMoreBtn.addEventListener('click', function() {
+                // Show all hidden items
+                for (let i = initialCount; i < items.length; i++) {
+                    items[i].style.display = 'block'; // Or 'flex' if you use d-flex
+                }
+                // Hide the "Show More" button after it's been clicked
+                showMoreBtn.style.display = 'none';
+            });
+        }
+
+        // --- SETUP CALLS ---
+        // Show the first 5 posts initially
+        setupShowMore('.post-item', 'show-all-posts-btn', 5);
+
+        // Show the first 6 members initially
+        setupShowMore('.member-item', 'show-all-members-btn', 6);
+    });
+
+    async function handleFollowClick(button) {
+        try {
+            // Disable the button immediately
+            button.disabled = true;
+
+            const clubId = button.getAttribute('data-club-id');
+            console.log('Following club:', clubId);
+
+            const response = await fetch(`/api/clubs/follow?clubId=${clubId}`, {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest'
+                },
+                credentials: 'same-origin'
+            });
+
+            console.log('Response status:', response.status);
+
+            if (response.status === 401) {
+                window.location.href = '/login';
+                return;
+            }
+
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
+            const isNowFollowing = await response.json();
+            console.log('Is now following:', isNowFollowing);
+
+            // Update button state
+            button.setAttribute('data-following', isNowFollowing);
+            button.textContent = isNowFollowing ? 'Following' : 'Follow Club';
+            button.className = `btn mb-2 ${isNowFollowing ? 'btn-secondary' : 'btn-primary'}`;
+
+        } catch (error) {
+            console.error('Error in handleFollowClick:', error);
+            alert('Failed to update follow status. Please try again.');
+        } finally {
+            button.disabled = false;
+        }
+    }
+
+    async function handleLikeClick(button) {
+        try {
+            // Disable the button immediately
+            button.disabled = true;
+
+            const postId = button.getAttribute('data-post-id');
+            console.log('Liking post:', postId);
+
+            const response = await fetch(`/api/posts/like?postId=${postId}`, {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest'
+                },
+                credentials: 'same-origin'
+            });
+
+            console.log('Response status:', response.status);
+
+            if (response.status === 401) {
+                window.location.href = '/login';
+                return;
+            }
+
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
+            const isNowLiked = await response.json();
+            console.log('Is now liked:', isNowLiked);
+
+            // Update button state
+            button.setAttribute('data-liked', isNowLiked);
+            if (isNowLiked) {
+                button.classList.remove('btn-outline-danger');
+                button.classList.add('btn-danger');
+            } else {
+                button.classList.remove('btn-danger');
+                button.classList.add('btn-outline-danger');
+            }
+
+            // Update like count
+            const likeCountSpan = button.querySelector('span');
+            if (likeCountSpan) {
+                let currentCount = parseInt(likeCountSpan.textContent) || 0;
+                likeCountSpan.textContent = isNowLiked ? currentCount + 1 : currentCount - 1;
+            }
+
+        } catch (error) {
+            console.error('Error in handleLikeClick:', error);
+            alert('Failed to update like status. Please try again.');
+        } finally {
+            button.disabled = false;
+        }
+    }
+</script>
+
+</body>
+</html>
