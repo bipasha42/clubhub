@@ -13,6 +13,11 @@ public class ClubMemberRepository {
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
+    public int countByClubId(UUID clubId) {
+        String sql = "SELECT COUNT(*) FROM club_members WHERE club_id = ?";
+        return jdbcTemplate.queryForObject(sql, Integer.class, clubId);
+    }
+
     public List<Object[]> findMembersByClubId(UUID clubId) {
         System.out.println("--- Repository: Finding members for club ID: " + clubId + " ---");
 
