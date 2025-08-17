@@ -1,5 +1,4 @@
 #ClubHub — Global University Clubs Hub
-
 ClubHub is a Spring Boot 3.5.4 web application that aggregates university clubs from around the world. It provides a unified explore experience, social interactions (follow, like, comment), and admin workflows for clubs and universities. Built with Spring Boot, Thymeleaf, Spring Security, PostgreSQL, and Flyway.
 
 Roles:
@@ -227,5 +226,6 @@ Implement, write tests
 Open a pull request with a clear description
 License
 [MIT or your chosen license]
+
 
 
